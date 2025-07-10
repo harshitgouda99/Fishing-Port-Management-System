@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Fishing Port Management System</title>
+
+    <!-- Link to CSS files -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/custom.css"> <!-- Custom styles -->
+
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            color: #333;
+        }
+
+        .navbar {
+            width: 100%;
+            background: #007BFF;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo a {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .navbar .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffeb3b;
+            transform: scale(1.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #007BFF;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .back-button a {
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .back-button a {
+                font-size: 1em;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="javascript:history.back()" class="back-button">Back to Dashboard</a>
+        <div class="logo">
+            <a href="index.html">DIGIPORTXPRESS</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </div>
+    <div class="container">
+        <h1>About Us</h1>
+        <p>
+            Welcome to the Fishing Port Management System! Our platform is designed to streamline the operations of fishing ports by providing a centralized system for customers, fishermen, and administrators.
+        </p>
+        <p>
+            With our system, customers can easily place orders, view their activities, and even register as fishermen. Fishermen can manage their catches, view their activities, and access important resources. Administrators have the tools to manage users, approve fisherman requests, and oversee the overall operations of the port.
+        </p>
+        <p>
+            Our goal is to simplify port management, improve efficiency, and provide a seamless experience for all users. Whether you're a customer, a fisherman, or an admin, the Fishing Port Management System is here to make your tasks easier and more efficient.
+        </p>
+        <p>
+            Thank you for choosing our system. If you have any questions or need assistance, feel free to contact us.
+        </p>
+        <div class="back-button">
+            <a href="javascript:history.back()">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

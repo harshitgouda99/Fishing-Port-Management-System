@@ -1,0 +1,134 @@
+<?php
+// Start session
+session_start();
+
+// Check if the user is logged in and is an admin
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
+    header("Location: login.html");
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishing Port Management System - Admin Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css"> <!-- Link to the updated CSS file -->
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .navbar {
+            width: 100%;
+            background: linear-gradient(90deg, #007BFF, #0056b3);
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .navbar .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #FFD700;
+            transform: scale(1.1);
+        }
+
+        .dashboard-container {
+            margin: 100px auto;
+            max-width: 800px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-container h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .dashboard-container ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .dashboard-container ul li {
+            margin: 10px 0;
+        }
+
+        .dashboard-container ul li a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #28a745;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .dashboard-container ul li a:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">Fishing Port</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <h1>Welcome to the Admin Dashboard</h1>
+        <p>Hello, <strong><?php echo htmlspecialchars($_SESSION['full_name']); ?></strong>! You are logged in as <strong>Admin</strong>.</p>
+
+        <!-- Admin Actions -->
+        <h2>Admin Actions</h2>
+        <ul>
+            <li><a href="manage_users.php">Manage Users</a></li>
+            <li><a href="view_logs.php">View System Logs</a></li>
+            <li><a href="generate_reports.php">Generate Reports</a></li>
+            <li><a href="admin_boat_approvals.php">Manage Boat Registrations</a></li>
+            <li><a href="today_activity.php">Today's Activity</a></li>
+            <li><a href="customer_manual.php">Customer Manual</a></li>
+        </ul>
+    </div>
+</body>
+</html>

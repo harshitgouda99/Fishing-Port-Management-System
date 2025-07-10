@@ -1,0 +1,289 @@
+<?php
+// Start session
+session_start();
+
+// Check if the user is logged in and is an admin
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
+    header("Location: login.html");
+    exit();
+}
+
+// Database connection
+$servername = "localhost";
+$username = "root"; // Replace with your database username
+$password = ""; // Replace with your database password
+$dbname = "fishing_port"; // Replace with your database name
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Handle reply to message
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message_submit'])) {
+    $reply_email = $_POST['reply_email'];
+    $reply_message = $_POST['reply_message'];
+    $user_name = $_POST['user_name'];
+
+    // Send reply email using PHPMailer
+    require_once __DIR__ . '/vendor/autoload.php';
+    $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'digiportxpress@gmail.com';
+        $mail->Password = 'xaty dolc nnwa qkmk';
+        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->setFrom('digiportxpress@gmail.com', 'DigiPortXpress');
+        $mail->addAddress($reply_email, $user_name);
+        $mail->Subject = 'Reply to your message - DigiPortXpress';
+        $mail->Body = $reply_message;
+        $mail->send();
+        echo "<script>alert('Reply sent successfully!');</script>";
+    } catch (Exception $e) {
+        echo "<script>alert('Failed to send reply.');</script>";
+    }
+}
+
+// Fetch messages from the database
+$sql = "SELECT id, name, email, subject, message, created_at FROM contact_messages ORDER BY created_at DESC";
+$result = $conn->query($sql);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Messages - Fishing Port Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            width: 100%;
+            background: #007BFF;
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo a {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .navbar .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            font-weight: 500;
+            transition: all 0.3s ease-in-out;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .navbar .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffeb3b;
+            transform: scale(1.1);
+        }
+
+        .navbar .back-button {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-right: auto;
+        }
+
+        .navbar .back-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #ffeb3b;
+        }
+
+        .dashboard-container {
+            margin-top: 100px;
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-container h1 {
+            color: #007BFF;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .dashboard-container table th,
+        .dashboard-container table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .dashboard-container table th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .dashboard-container table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .dashboard-container a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .dashboard-container a:hover {
+            color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container h1 {
+                font-size: 2em;
+            }
+
+            .dashboard-container table th,
+            .dashboard-container table td {
+                font-size: 0.9em;
+            }
+        }
+
+        /* Add this for reply form styling */
+        .reply-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        .reply-form button {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="<?php echo isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER']) : 'dashboard.php'; ?>" class="back-button">Back to Dashboard</a>
+        <div class="logo">
+            <a href="index.html">DIGIPORTXPRESS</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </div>
+    <div class="dashboard-container">
+        <h1>View Messages</h1>
+
+        <!-- Messages Table -->
+        <h2>All Messages</h2>
+        <?php if ($result->num_rows > 0): ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                        <th>Timestamp</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['email']); ?></td>
+                            <td><?php echo htmlspecialchars($row['subject']); ?></td>
+                            <td><?php echo htmlspecialchars($row['message']); ?></td>
+                            <td><?php echo $row['created_at']; ?></td>
+                            <td>
+                                <button type="button" onclick="showReplyForm(<?php echo $row['id']; ?>)">Reply</button>
+                                <div id="reply-form-<?php echo $row['id']; ?>" class="reply-form" style="display:none; margin-top:10px;">
+                                    <form action="view_messages.php" method="POST">
+                                        <input type="hidden" name="reply_email" value="<?php echo htmlspecialchars($row['email']); ?>">
+                                        <input type="hidden" name="user_name" value="<?php echo htmlspecialchars($row['name']); ?>">
+                                        <textarea name="reply_message" rows="3" placeholder="Type your reply here..." required></textarea>
+                                        <button type="submit" name="reply_message_submit">Send Reply</button>
+                                        <button type="button" onclick="hideReplyForm(<?php echo $row['id']; ?>)">Cancel</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>No messages found.</p>
+        <?php endif; ?>
+
+        <!-- Back to Dashboard -->
+        <p><a href="admin_dashboard.php">Back to Dashboard</a></p>
+    </div>
+    <footer>
+        <div style="text-align: center; padding: 10px; background-color: #f1f1f1;">
+            <p>&copy; 2025 Fishing Port Management System. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+    function showReplyForm(id) {
+        document.getElementById('reply-form-' + id).style.display = 'block';
+    }
+    function hideReplyForm(id) {
+        document.getElementById('reply-form-' + id).style.display = 'none';
+    }
+    </script>
+</body>
+</html>
+<?php
+// Close the connection
+$conn->close();
+?>
